@@ -1,11 +1,21 @@
-﻿using System.IO.Ports;
+﻿using System;
+using System.IO.Ports;
+using System.Text;
 using System.Timers;
-using System;
+using System.Collections.Generic;
 
 namespace SerialPort_4NetFramework
 {
+    /// <summary>
+    /// 串口 公共资源类
+    /// </summary>
     public class SerialPortUtility
     {
+        /// <summary>
+        /// 串口是否已打开
+        /// </summary>
+        public bool IsOpen { get; set; }
+
         /// <summary>
         /// 初始化 串行端口资源
         /// </summary>
@@ -15,12 +25,14 @@ namespace SerialPort_4NetFramework
         /// 串口接收数据 位置
         /// </summary>
         private static int pSerialPortRecv = 0;
+
         /// <summary>
-        /// 缓存区大小的长度    
+        /// 缓存区大小的长度
         /// 缓冲区可调大
         /// （接收数据处理定时器 内接收数据量 小于下面设置的值即可）
         /// </summary>
         private static int byteLength = 40960;
+
         /// <summary>
         /// 串口接收字节 缓存区大小
         /// </summary>
@@ -62,6 +74,14 @@ namespace SerialPort_4NetFramework
         }
 
         /// <summary>
+        /// 初始化
+        /// </summary>
+        public SerialPortUtility()
+        {
+            IsOpen = false;
+        }
+
+        /// <summary>
         /// 设置 串口配置
         /// </summary>
         /// <param name="portName">串口号</param>
@@ -80,15 +100,19 @@ namespace SerialPort_4NetFramework
                 default:
                     mySerialPort.Parity = Parity.None;
                     break;
+
                 case 1:
                     mySerialPort.Parity = Parity.Odd;
                     break;
+
                 case 2:
                     mySerialPort.Parity = Parity.Even;
                     break;
+
                 case 3:
                     mySerialPort.Parity = Parity.Mark;
                     break;
+
                 case 4:
                     mySerialPort.Parity = Parity.Space;
                     break;
@@ -99,13 +123,16 @@ namespace SerialPort_4NetFramework
                 case 0:
                     mySerialPort.StopBits = StopBits.None;
                     break;
+
                 case 1:
                 default:
                     mySerialPort.StopBits = StopBits.One;
                     break;
+
                 case 2:
                     mySerialPort.StopBits = StopBits.OnePointFive;
                     break;
+
                 case 3:
                     mySerialPort.StopBits = StopBits.Two;
                     break;
@@ -135,9 +162,11 @@ namespace SerialPort_4NetFramework
             {
                 SetSerialPortConfig(portName, baudRate, parity, dataBits, stopBits);
                 mySerialPort.Open();
+                IsOpen = true;
             }
             catch (System.Exception)
             {
+                IsOpen = false;
                 throw;
             }
         }
@@ -150,10 +179,11 @@ namespace SerialPort_4NetFramework
             try
             {
                 mySerialPort.Close();
+                IsOpen = false;
             }
             catch (System.Exception)
             {
-
+                IsOpen = false;
                 throw;
             }
         }
@@ -161,7 +191,7 @@ namespace SerialPort_4NetFramework
         /// <summary>
         /// 串口数据发送
         /// </summary>
-        /// <param name="content"></param>
+        /// <param name="content">byte类型数据</param>
         public void SendData(byte[] content)
         {
             try
@@ -170,7 +200,24 @@ namespace SerialPort_4NetFramework
             }
             catch (System.Exception)
             {
+                throw;
+            }
+        }
 
+        /// <summary>
+        /// 串口数据发送
+        /// </summary>
+        /// <param name="strContent">字符串数据</param>
+        /// <param name="encoding">编码规则</param>
+        public void SendData(string strContent, Encoding encoding)
+        {
+            try
+            {
+                byte[] content = encoding.GetBytes(strContent);
+                mySerialPort.Write(content, 0, content.Length);
+            }
+            catch (System.Exception)
+            {
                 throw;
             }
         }
@@ -215,11 +262,60 @@ namespace SerialPort_4NetFramework
                 pSerialPortRecv += ReadBuf.Length;
 
                 SerialPortRecvTimer.Start();
-
             }
             catch (System.Exception)
             {
+                throw;
+            }
+        }
 
+        /// <summary>
+        /// 获取当前可用PortName
+        /// </summary>
+        /// <returns></returns>
+        public static List<SPParameterClass<string>> GetPortList()
+        {
+            try
+            {
+                List<SPParameterClass<string>> lst_sParameterClass = new List<SPParameterClass<string>>();
+                foreach (string data in SerialPort.GetPortNames())
+                {
+                    SPParameterClass<string> i_sParameterClass = new SPParameterClass<string>();
+                    i_sParameterClass.Name = data;
+                    i_sParameterClass.Value = data;
+                    lst_sParameterClass.Add(i_sParameterClass);
+                }
+
+                return lst_sParameterClass;
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 设置波特率
+        /// </summary>
+        /// <returns></returns>
+        public static List<SPParameterClass<int>> SetBaudRateValues()
+        {
+            try
+            {
+                List<SPParameterClass<int>> lst_sParameterClass = new List<SPParameterClass<int>>();
+                foreach (SerialPortBaudRates rate in Enum.GetValues(typeof(SerialPortBaudRates)))
+                {
+                    SPParameterClass<int> i_sParameterClass = new SPParameterClass<int>();
+                    i_sParameterClass.Name = ((int)rate).ToString();
+                    i_sParameterClass.Value = (int)rate;
+                    lst_sParameterClass.Add(i_sParameterClass);
+                }
+
+                return lst_sParameterClass;
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
