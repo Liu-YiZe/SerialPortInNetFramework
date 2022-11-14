@@ -1,18 +1,78 @@
-# SerialPort_4NetFramework
-<p>2019-06-06</p>
-<p>ÕâÊÇ»ùÓÚ.Net Framework 4.0£¬·â×°ÁË´®¿ÚÒ»Ğ©²Ù×÷£¬Èç´ò¿ª´®¿Ú¡¢¹Ø±Õ´®¿Ú¡¢´®¿Ú·¢ËÍ¡¢´®¿Ú½ÓÊÕµÈ£¬·½±ãÏÂ´ÎĞèÒªÊ¹ÓÃ´®¿Ú¹¦ÄÜÊ±£¬Ö±½ÓÔÚ½â¾ö·½°¸ÖĞÌí¼Ó¸ÃÀà¿â¡£¿ÉÒÔÖ±½Óµ÷È¡Ê¹ÓÃ¡£</p>
+# SerialPortInNetFramework
 
-<p>Ä¿Ç°Íê³É¹¦ÄÜ£º</p>
-<p>1¡¢´ò¿ª´®¿Ú</p>
-<p>2¡¢¹Ø±Õ´®¿Ú</p>
-<p>3¡¢¹ã²¥´®¿ÚÊÕµ½µÄÏûÏ¢</p>
-<p>4¡¢·¢ËÍ´®¿ÚÊı¾İ</p>
+#### ä»‹ç»
+è¿™æ˜¯åŸºäº.Net Framework 4.0ï¼Œå°è£…äº†ä¸²å£ä¸€äº›æ“ä½œï¼Œå¦‚æ‰“å¼€ä¸²å£ã€å…³é—­ä¸²å£ã€ä¸²å£å‘é€ã€ä¸²å£æ¥æ”¶ç­‰ï¼Œæ–¹ä¾¿ä¸‹æ¬¡éœ€è¦ä½¿ç”¨ä¸²å£åŠŸèƒ½æ—¶ï¼Œç›´æ¥åœ¨è§£å†³æ–¹æ¡ˆä¸­æ·»åŠ è¯¥ç±»åº“ã€‚å¯ä»¥ç›´æ¥è°ƒå–ä½¿ç”¨ã€‚
 
-<p>×¢ÒâÊÂÏî£º</p>
-<p>ĞèÒª¶©ÔÄ ´®¿Ú½ÓÊÕÊı¾İÊÂ¼ş£¬²Å¿ÉÒÔ½ÓÊÕµ½´®¿ÚÊı¾İ¡£</p>
-<p>¸ÃÀà¿âµÄ±àÒëÆ÷ÊÇVisual Studio 2010£¬¿ò¼ÜÊÇ.Net Framework 4.0</p>
+#### è½¯ä»¶æ¶æ„
+1.  ç±»åº“çš„ç¼–è¯‘å™¨æ˜¯Visual Studio 2010ï¼Œæ¡†æ¶æ˜¯.Net Framework 4.0ã€‚
+2.  éœ€è¦è®¢é˜…ä¸²å£æ¥æ”¶æ•°æ®äº‹ä»¶ï¼Œæ‰å¯ä»¥æ¥æ”¶åˆ°ä¸²å£æ•°æ®ã€‚
 
-<p>2019-09-17</p>
-<p>ĞÂÔö¹¦ÄÜ£º</p>
-<p>1¡¢¿ÉÒÔ»ñÈ¡µ±Ç°ÏµÍ³ÏÂµÄ´®¿Ú×ÊÔ´</p>
-<p>2¡¢Ìá¹©²¨ÌØÂÊÁĞ±í½Ó¿Ú</p>
+
+#### ç°æœ‰åŠŸèƒ½
+
+1.  æ‰“å¼€ä¸²å£
+2.  å…³é—­ä¸²å£
+3.  å¹¿æ’­ä¸²å£æ”¶åˆ°çš„æ¶ˆæ¯
+4.  å‘é€ä¸²å£æ•°æ®
+5.  å¯ä»¥è·å–å½“å‰ç³»ç»Ÿä¸‹çš„ä¸²å£èµ„æº
+6.  æä¾›æ³¢ç‰¹ç‡åˆ—è¡¨æ¥å£
+
+#### ä½¿ç”¨æ–¹å¼
+
+1ã€è°ƒç”¨å¯¹è±¡çš„æ„é€ å‡½æ•°
+
+```c#
+SerialPortUtility mySP = new SerialPortUtility();
+```
+
+2ã€è·å–å½“å‰ç³»ç»Ÿä¸‹çš„ä¸²å£èµ„æº
+
+```C#
+private void GetPortList()
+{
+    // ä¸²å£å·
+    List<SPParameterClass<string>> portList = SerialPortUtility.GetPortList();
+    // æ³¢ç‰¹ç‡
+    List<SPParameterClass<int>> rateList = SerialPortUtility.SetBaudRateValues();
+}
+```
+
+
+
+3ã€è®¢é˜…ä¸²å£æ”¶åˆ°æ•°æ®äº‹ä»¶
+
+```C#
+// åœ¨ç¨‹åºå¯åŠ¨çš„å‡½æ•°ä¸­æ·»åŠ ç›‘å¬å‡½æ•°
+mySP.ReceivedDataEvent += new EventHandler<SerialPort_4NetFramework.SerialPortUtility.SerialPortRecvEventArgs>(mySp_ReceivedDataEvent);
+
+private void mySp_ReceivedDataEvent(object sender, SerialPortUtility.SerialPortRecvEventArgs args)
+{
+    // args.RecvDataæ˜¯byte[]ç±»å‹
+    string OutputMessage = "";
+    // å°†args.RecvDataè½¬æˆASCIIæ ¼å¼
+    OutputMessage = Encoding.GetEncoding("gb2312").GetString(args.RecvData, 0, args.RecvDataLength);
+    // å°†args.RecvDataè½¬æˆæ”¶åˆ°HEXæ ¼å¼
+    for (int i = 0; i < args.RecvDataLength; i++)
+    {
+        OutputMessage += args.RecvData[i].ToString("X2");
+    }
+}
+```
+
+4ã€ä¸²å£æ‰“å¼€/å…³é—­
+
+```c#
+// æ‰“å¼€ä¸²å£
+mySP.OpenSerialPort("COM1", 115200, 0, 8, 1);	// å‚æ•°åˆ†åˆ«ä¸ºä¸²å£å·ã€æ³¢ç‰¹ç‡ã€æ£€éªŒä½ã€æ•°æ®ä½ã€åœæ­¢ä½
+// å…³é—­ä¸²å£
+mySP.CloseSerialPort();
+// ä¸²å£æ˜¯å¦å¼€å¯æ ‡å¿—ä½
+mySP.IsOpen
+```
+
+5ã€å‘é€æ•°æ®
+
+```C#
+mySP.SendData(data);	// dataçš„ç±»å‹ä¸ºbyte[]
+mySP.SendData(data, encoding);	// dataçš„ç±»å‹ä¸ºbyte[],encodingçš„ç±»å‹ä¸ºEncoding
+```
